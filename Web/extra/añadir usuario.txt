@@ -1,0 +1,16 @@
+Modificar info usuario:
+	- Nombre del hander: updateUser(nombre, apellidos, e-mail, ciudad, direccion, telefono,callback=?);
+		- Devuelve: OK/KO.
+	- Update: nombre, apellidos, e-mail, ciudad, direccion, telefono
+	
+Realizar pedido:
+	-> ciudad -> farmacia (info) -> productos (info)
+	
+	- Nombre del handler: listCiudad(callback=?);
+		- Devuelve: OK, ciudades[];
+	- Nombre del handler: listFarm(ciudad,callback=?);
+		- Devuelve: OK, farmacias[]; <- con su informacion de cada farmacia
+	- Nombre del handler: listProd(farmacia,callback=?);
+		- Devuelve: OK, productos[]; <- con la informacion de cada producto y stock
+	- Nombre del handler: pedido(email, producto, cantidad) <- en el handler hay que poner fecha y estado
+	

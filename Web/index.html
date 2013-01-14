@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+	<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>FarmApp</title>
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap-combined.min.css" rel="stylesheet">
+	<style type="text/css">ad.right{test-align:right;}</style>
+	<!--
+	<link rel="stylesheet" href="css/bootstrap.css" />
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/bootstrap-responsive.css" />
+	<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />-->
+	<link rel="stylesheet" href="css/docs.css" />
+	
+	<script type="text/javascript">
+	
+	function initialize(response){
+		
+		// Creamos mapa
+		var map = new google.maps.Map(document.getElementById('googlemap'), {
+			//zoom: 12,
+			streetViewControl: true,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			zoomControlOptions: {
+				style: google.maps.ZoomControlStyle.SMALL
+			}
+		});
+		
+		var marker, i, location, lat, lon, contenidoBubble;
+		var bounds = new google.maps.LatLngBounds();
+		var image = "img/marcador.png";
+		
+		// Añadimos posiciones de las farmacias
+		if (response.status==='OK' && response.result){ 
+			for(var i=0; i<response.result.length; i++){
+									   
+				// Obtenemos punto de coordenadas
+				lat = parseFloat(response.result[i].latitud);
+				lon = parseFloat(response.result[i].longitud);
+				location = new google.maps.LatLng(lat, lon);
+				
+				// Añadimos marcador al mapa
+				marker = new google.maps.Marker({
+					position: location,
+					map: map,
+					icon: image,
+					title: response.result[i].nombre,
+					link: "www.google.es"
+				});
+				
+				// Extendemos el area del mapa para ajustarla al nuevo marcador
+				bounds.extend(location);
+				
+				// Añadimos evento onClick para mostrar bubble
+				google.maps.event.addListener(marker, 'click', function() {
+					window.location = "http://www.google.com/";
+                });
+			}
+		}
+		
+		// Ajustamos zoom del mapa a todos los marcadores
+		map.fitBounds(bounds);
+	}
+</script>
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-static-top"> 
+		<div class="navbar-inner">
+			<div class="container">
+				<ul class="nav">
+					<li><a class="brand">FarmApp</a></li>
+					<li class="active" id="liinicio"><a id="ainicio" href="">Inicio</a></li>
+					<li id="lifarmacia"><a id="afarmacia" href="">Farmacias</a></li>
+					<li id="liapp"><a id="aapp" href="">App</a></li>
+					<li id="liregistro"><a id="aregistro" href="">Registro</a></li>
+					<li id="lilogin"><a id="alogin" href="">Login</a></li>
+				</ul>
+				<ul class="nav pull-right" id="menu_user">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="user2"></a>
+						<ul id="menu" class="dropdown-menu">
+							<li class="divider"></li>
+							<li><a id="ainfo" href="">Informaci&oacute;n usuario</a></li>
+							<li><a id="apedido" href="">Realizar un pedido</a></li>
+							<li><a id="ahistorial" href="">Historial de compras</a></li>
+							<li><a id="afarma" href="">Modificar datos farmacia</a></li>
+							<li><a id="aproductos" href="">Modificar productos</a></li>
+							<li><a id="aproductosfarm" href="">añadir productos</a></li>
+							<li><a id="amifarma" href="">Mi Farmacia</a></li>
+							<li><a id="anewfarma" href="">Modificar farmaceutico</a></li>
+							<li class="divider"></li>
+							<li><a id="alogout" href="">Cerrar sesion</a></li>
+						</ul>
+					</li>
+				</ul>
+				<form class="navbar-search pull-right" id="search-form">
+					<input type="text" class="search-query" placeholder="Buscar farmacia" id="isearch" data-provide="typehead">
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<div class="content hide jumbotron2 subhead " id="app">
+		<div class="container">
+		<h1>App</h1>
+		<p class="lead">Aplicaci&oacute;n para tu Smartphone Android.</p>
+	  </div>
+	</div>
+	
+	<div class="content hide" id="farmacia">
+		<div class="jumbotron2 subhead">
+		<div class="container">
+		<h1>FARMACIAS</h1>
+		<p class="lead">Encuentra tu farmacia más cercana</p>
+		<br/>
+		</div>
+		</div>
+		
+		<center><div id="googlemap" style="width:1000px; height:500px; background-color:#000"></div></center>
+		</div>
+	</div>
+	
+	
+	<div class="container content hide" id="historial">
+		<h2>Pedidos realizados</h2>
+		<table class="table table-hover" id="tb_hist">
+			<thead>
+				<tr>
+					<th>Id pedido</th><th>Fecha</th><th>Farmacia</th><th>Producto</th><th>Cantidad</th><th>Precio unidad</th><th>Total</th><th>Estado</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td><td>02/01/2013</td><td>Condones 2x1</td><td>Aspirina</td><td>2</td><td>1&euro;</td><td>1&euro;</td><td>Iniciado</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="container content hide" id="info">
+		<h2>Informaci&oacute;n del usuario</h2>
+		<table class="table table-hover" id="tb_info">
+			<thead>
+				<tr>
+					<th>Nombre</th><th>Apellidos</th><th>e-mail</th><th>Ciudad</th><th>Direcci&oacute;n</th><th>Tel&eacute;fono</th><th>Acci&oacute;n</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	<div class="container content hide" id="lfarma">
+		<h2>Lista de farmacias</h2>
+		<table class="table table-hover" id="tb_farma">
+		
+			<thead>
+				<tr>
+					<th>Nombre</th><th>Ciudad</th><th>Latitud</th><th>Longitud</th><th>Direcci&oacute;n</th><th>Horario</th><th>Acci&oacute;n</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	
+	
+	<div class="container content hide" id="newfarma">
+		<h2>Lista de farmaceuticos</h2>
+		<table class="table table-hover" id="tb_newfarma">
+			<thead>
+				<tr>
+					<th>Nombre</th><th>Apellidos</th><th>e-mail</th><th>Ciudad</th><th>Direcci&oacute;n</th><th>Tel&eacute;fono</th><th>Acci&oacute;n</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	<div class="container content hide" id="mifarma">
+		<h2>Mi farmacia</h2>
+		<table class="table table-hover" id="tb_mifarma">
+			<thead>
+				<tr>
+					<th>Nombre</th><th>ciudad</th><th>Latitud</th><th>Longitud</th><th>Direcci&oacute;n</th><th>Horario</th><th>Acci&oacute;n</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	
+	
+	<div class="container content hide" id="lproductos">
+		<h2>Lista de Productos</h2>
+		<table class="table table-hover" id="tb_productos">
+			<thead>
+				<tr>
+					<th>Nombre</th><th>tipo</th><th>cantidad</th><th>descripcion</th><th>receta</th><th>Precio</th><th>Acci&oacute;n</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	<div class="container content hide" id="productosfarm">
+		<h2>Añadir Productos a la farmacia</h2>
+		<div class="table table-hover" id="tb_productosfarm">
+			<!--<thead>
+				<tr>
+					<th>Farmacia</th><th>Producto</th><th>Precio</th><th>Cantidad en stock</th><th>Acci&oacute;n</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>-->
+		</div>
+	</div>
+	
+	<div class="jumbotron masthead content " id="inicio">
+		
+		<img src="img/logo2.png" style="width:700px">
+		<div class="container">
+		<p style="color:#C1C1C1">Bienvenido a FarmApp, tu aplicaci&oacute;n Web y Smartphone para encontrar la farmacia más cercana</p>
+		<ul class="masthead-links">
+		  <li>
+			Version 2.2
+		  </li>
+		</ul>
+		</div>
+	  
+	</div>
+	
+	<div class="content hide" id="registro">
+	<div class="jumbotron2 subhead ">
+	  <div class="container">
+		<h1>Registro</h1>
+		<p class="lead">Crea tu cuenta.</p>
+	  </div>
+	</div>
+	<div class="container">
+		<form id="register-form">
+			<div class="span5 pull-left">
+				<div class="control-group" id="rcgnombre">
+					<label for="rinombre" class="control-label">Nombre</label>  
+					<input class="span3" id="rinombre" type="text" placeholder=""><p></p>
+					<span id="renombre" class="help-inline hide"></span> 
+				</div>
+				<div class="control-group" id="rcgapellido">
+					<label for="riapellido" class="control-label">Apellido</label>  
+					<input class="span3" id="riapellido" type="text" placeholder=""><p></p>
+					<span id="reapellido" class="help-inline hide"></span> 
+				</div>
+				<div class="control-group" id="rcgmail">
+					<label for="rimail" class="control-label">e-mail</label>  
+					<input class="span3" id="rimail" type="text" placeholder=""><p></p>
+					<span id="remail" class="help-inline hide"></span> 
+				</div>
+				<div class="control-group" id="rcgtelefono">
+					<label for="ritelefono" class="control-label">Tel&eacute;fono</label>  
+					<input class="span3" id="ritelefono" type="text" placeholder=""><p></p>
+					<span id="retelefono" class="help-inline hide"></span> 
+				</div>				
+			</div>
+			<div class="span3">
+				<div class="control-group" id="rcgcontrase�a">
+					<label for="ricontrase�a" class="control-label">Contrase&ntilde;a</label>  
+					<input class="span3" id="ricontrase�a" type="password" placeholder=""><p></p>
+					<span id="recontrase�a" class="help-inline hide"></span> 
+				</div> 
+				<div class="control-group" id="rcgrepcontrase�a">
+					<label for="rirepcontrase�a" class="control-label">Confirmacion Contrase&ntilde;a</label>  
+					<input class="span3" id="rirepcontrase�a" type="password" placeholder=""><p></p>
+					<span id="rerepcontrase�a" class="help-inline hide"></span> 
+				</div>
+				<div class="control-group" id="rcgdireccion">
+					<label for="ridireccion" class="control-label">Direcci&oacute;n</label>  
+					<input class="span3" id="ridireccion" type="text" placeholder=""><p></p>
+					<span id="redireccion" class="help-inline hide"></span> 
+				</div>
+				<div class="control-group" id="rcgciudad">
+					<label for="riciudad" class="control-label">Ciudad</label>  
+					<input class="span3" id="riciudad" type="text" placeholder=""><p></p>
+					<span id="reciudad" class="help-inline hide"></span> 
+				</div>
+				<div class="control-group pull-right">
+					<div class="controls">
+						<button id="register-form" type="submit" class="btn btn-success">Enviar</button>
+					</div>
+				</div>
+			</div> 
+		</form>
+	</div>
+	</div>
+	
+	<div class="content hide" id="login">
+		<div class="jumbotron2 subhead ">
+		  <div class="container">
+			<h1>Login</h1>
+			<p class="lead">Pide tus productos en las farmacias de siempre </p>
+			</div>
+		</div>
+		<div class="container">
+		<form class="span3" id="login-form">
+			
+			<div class="control-group" id="cginputname">
+				<label class="control-label" for="inputname">E-mail</label>
+				<input class="span3" type="text" id="inputname" placeholder="">
+				<span id="einputname" class="help-inline hide"></span>
+			</div>
+			<div class="control-group" id="cginputPassword">
+				<label class="control-label" for="inputPassword">Contrase&ntilde;a</label>
+				<input class="span3" type="password" id="inputPassword" placeholder="">
+				<span id="einputPassword" class="help-inline hide"></span>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button id="login-form" type="submit" class="btn btn-success pull-right">Entrar</button>
+				</div>
+			</div>
+		</form>		
+	</div>
+	</div>
+	
+	<div class="container content hide" id="pedido">
+		<form id="pedido-form">
+			<legend><h2>Realiza tu pedido</h2></legend>
+			<div class="control-group" id="cgnomciudad">
+				<label class="control-label" for="inputnamefarmacia">Ciudad</label>
+				
+					<SELECT NAME="urldestino">
+					<option selected>--- LISTA CIUDADES ---
+					<option value="Ciudad1" >Ciudad 1
+					<option value="Ciudad2">Ciudad 2
+					<option value="Ciudad3">Ciudad 3
+					<option value="Ciudad4">Ciudad 4
+					</SELECT>
+					<input type="button" value="Seleccionar" onClick="location=this.form.urldestino.value" name="button">						
+			</div>
+			<div class="control-group" id="cgnomfarmacia">
+				<label class="control-label" for="inputnamefarmacia">Farmacia</label>
+				
+					<SELECT NAME="urldestino">
+					<option selected>--- LISTA FARMACIAS ---
+					<option value="farm1" >Farmacia 1
+					<option value="farm2">Farmacia 2
+					<option value="farm3">Farmacia 3
+					<option value="farm4">Farmacia 4
+					</SELECT>
+					<input type="button" value="Seleccionar" onClick="location=this.form.urldestino.value" name="button">						
+			</div>
+			<div class="control-group" id="cgnomproducto">
+				<label class="control-label" for="inputnameproducto">Producto</label>
+				
+					<SELECT NAME="urldestino">
+					<option selected>--- LISTA PODUCTOS ---
+					<option value="prod1" >Producto 1
+					<option value="prod2">Producto 2
+					<option value="prod3">Producto 3
+					<option value="prod4">Producto 4
+					</SELECT>
+					<input type="button" value="Seleccionar" onClick="location=this.form.urldestino.value" name="button">
+			</div>
+			<div class="control-group" id="cgcantidad">
+				<label class="control-label" for="inputcantidad">Cantidad</label>
+				<input class="span1" type="cantidad" id="inputcantidad" placeholder="">
+			</div>
+			<div class="control-group">
+				<div class="controls span3">
+					<button id="pedido-form" type="submit" class="btn btn-primary pull-right">Realizar Pedido</button>
+				</div>
+			</div>
+		</form>		
+	</div>
+
+<!-- SCRIPTS -->
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
+<script src="https://raw.github.com/makeusabrew/bootbox/v2.4.2/bootbox.min.js"></script>
+<script type="text/javascript" src="js/jquery.jsonp-2.4.0.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/farmapp-service-api.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript" src="js/register.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+
+</body>
+</html>

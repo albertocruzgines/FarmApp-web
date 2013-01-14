@@ -1,0 +1,30 @@
+WEB
+
+registro farmacia: solo administrador
+
+Página principal (Para todos los usuarios):
+
+    Información de la página y la APP  					OK
+    Lista de farmacias que estén en la BBDD				OK
+    Búsqueda de farmacias por localidad o de guardia	
+    Información detallada de cada farmacia				
+        Horario semanal									
+        Calendario de guardia							
+        Población / Dirección							
+        Listar Productos de cada farmacia				
+        Teléfono										
+        email											
+        Lista productos de cada farmacia				
+        Login de usuarios								
+        Registro de usuarios							
+
+Zona Cliente (Usuario logueado):
+
+    Reserva de productos para recogida en farmacia		
+    Listar compras hechas anteriormente					
+	lista de compras									
+
+Zona farmacias (Farmacia logueada):
+
+    Modificar datos de farmacia (Nombre, dirección, horarios….)
+    Añadir/quitar/modificar productos (nombre, descripción, precio…)
